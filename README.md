@@ -1,9 +1,8 @@
-tischplatten/
 # Tischplatten-Konfigurator
 
 ## Projektbeschreibung
 
-Der Tischplatten-Konfigurator ist eine interaktive Webanwendung, mit der Kund:innen einer (fiktiven) Tischlerei individuelle Tischplatten konfigurieren und den Preis berechnen können. Die Anwendung ist ein Beispielprojekt für JavaScript-Grundlagen und demonstriert die Trennung von HTML, CSS und JavaScript.
+Der Tischplatten-Konfigurator ist eine moderne Webanwendung, mit der Kund:innen einer Tischlerei individuelle Tischplatten konfigurieren und den Preis direkt berechnen können. Das Projekt demonstriert die Trennung von HTML, CSS und JavaScript und eignet sich als Beispiel für praxisnahe JavaScript-Anwendungen.
 
 ---
 
@@ -12,10 +11,11 @@ Der Tischplatten-Konfigurator ist eine interaktive Webanwendung, mit der Kund:in
 - Auswahl von Plattentyp (vollmassiv, gedoppelt)
 - Auswahl von Form, Farbe, Finish, Rissanteil und Zusatzoptionen
 - Eingabe von Breite, Länge und Stärke
-- Automatische Preisberechnung inkl. Zuschläge und Kleinteil-Zuschlag
-- Responsive Design (funktioniert auf Desktop und Mobilgeräten)
-- Vorschau von Form und Farbe (wenn Bilder vorhanden)
+- Preisberechnung inkl. Zuschläge und Kleinteil-Zuschlag
+- Responsive Design für Desktop und Mobilgeräte
+- Vorschau von Form und Farbe (sofern Bilder vorhanden)
 - Fehlerbehandlung und Benutzerführung
+- Übersichtliche, tabellarische Preisanzeige
 
 ---
 
@@ -25,25 +25,26 @@ Der Tischplatten-Konfigurator ist eine interaktive Webanwendung, mit der Kund:in
 2. **Form, Farbe, Finish, Rissanteil** und ggf. Zusatzoptionen auswählen
 3. **Maße eingeben** (Breite, Länge, Stärke)
 4. Auf **Preis berechnen** klicken
-5. Der Preis und alle Zuschläge werden angezeigt
+5. Der Preis und alle Zuschläge werden tabellarisch angezeigt
 6. Mit **Zurücksetzen** das Formular leeren
 
 ---
 
 ## Technische Hinweise
 
-- **HTML**: Struktur und Formularelemente
-- **CSS**: Alle Styles in `css/styles.css` (keine Inline-Styles)
-- **JavaScript**: Logik in `js/konfigurator.js` (keine HTML-Event-Handler)
-- **Bilder**: Vorschau-Bilder im Ordner `images/` (optional)
+- **HTML**: Struktur und Formularelemente (`index.html`)
+- **CSS**: Alle Styles in `css/styles.css` (keine Inline-Styles, tabellarisches Layout)
+- **JavaScript**: Logik in `js/tischplatten-konfigurator.js` (keine HTML-Event-Handler)
+- **Bilder**: Vorschaubilder im Ordner `images/` (optional)
 
 ---
 
-## Preisberechnung (Beispiel)
+## Preisberechnung
 
 - Grundpreis pro m² je nach Typ und Stärke (siehe JS-Code)
-- Zuschläge für bestimmte Optionen (z.B. Äste/Risse verfüllt, Roh-Finish)
+- Zuschläge für bestimmte Optionen (z.B. Äste/Risse verfüllt, Finish, Farbe)
 - Kleinteil-Zuschlag (+5%) bei Flächen < 1 m²
+- Alle Preisbestandteile werden tabellarisch und übersichtlich ausgegeben
 
 ---
 
@@ -51,13 +52,13 @@ Der Tischplatten-Konfigurator ist eine interaktive Webanwendung, mit der Kund:in
 
 ```
 Übungen/tischplatten/
-├── index.html              # Hauptdatei (verwenden!)
+├── index.html              # Hauptdatei
 ├── css/
 │   └── styles.css         # Alle Styles
 ├── js/
-│   └── konfigurator.js    # JavaScript-Logik
+│   └── tischplatten-konfigurator.js    # JavaScript-Logik
 ├── images/                # Vorschaubilder (optional)
-└── README.md              # Diese Projektbeschreibung
+└── README.md              # Projektbeschreibung
 ```
 
 ---
@@ -66,6 +67,7 @@ Der Tischplatten-Konfigurator ist eine interaktive Webanwendung, mit der Kund:in
 
 - Die Anwendung ist vollständig ohne Backend lauffähig (nur im Browser öffnen).
 - Die Preislogik ist im JS-Code dokumentiert und kann leicht angepasst werden.
+- Die Preisanzeige ist tabellarisch und entspricht modernen UX-Standards.
 
 ---
 

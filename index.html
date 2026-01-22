@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tischplatten-Konfigurator - Premium Tischlerei</title>
+    <!-- Einbindung der CSS-Datei für das Design -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Einbindung der JavaScript-Datei für die Logik -->
+    <script src="js/konfigurator.js"></script>
+</head>
+
+<body>
+    <!-- Kopfbereich mit Überschrift und Untertitel -->
+    <header>
+        <h1>Tischplatten-Konfigurator</h1>
+        <p>Konfigurieren Sie Ihre individuelle Tischplatte nach Ihren Wünschen</p>
+    </header>
+
+    <!-- Hauptbereich mit Formular und Preisanzeige -->
+    <main class="konfigurator">
+        <!-- Formular für die Konfiguration der Tischplatte -->
+        <form id="konfiguratorForm">
+            <!-- Auswahl des Plattentyps -->
+            <section class="form-section">
+                <h2>Plattentyp</h2>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="typ" value="vollmassiv" id="typVollmassiv" checked>
+                        <span class="radio-custom"></span>
+                        Vollmassiv
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="typ" value="gedoppelt" id="typGedoppelt">
+                        <span class="radio-custom"></span>
+                        Gedoppelt
+                    </label>
+                </div>
+            </section>
+
+            <!-- Auswahl der Form/Kante -->
+            <section class="form-section">
+                <h2>Form der Tischplatte</h2>
+                <div class="form-group">
+                    <label for="form">Kantenbearbeitung:</label>
+                    <select id="form" name="form">
+                        <option value="">Bitte auswählen</option>
+                        <option value="gerade">Gerade Kante</option>
+                        <option value="facette">Facettenkante</option>
+                        <option value="baumkante">Mit Baumkante</option>
+                        <option value="bohlen">Durchgängige Bohlen</option>
+                        <option value="querfries">Mit Querfries</option>
+                        <option value="rund">Rund</option>
+                        <option value="oval">Oval</option>
+                    </select>
+                </div>
+                <!-- Vorschau-Bild für die Form -->
+                <div class="form-preview" id="formPreview"></div>
+            </section>
+
+            <!-- Maßeingabe für die Tischplatte -->
+            <section class="form-section">
+                <h2>Abmessungen</h2>
+                <div class="dimensions-grid">
+                    <div class="form-group">
+                        <label for="breite">Breite (cm):</label>
+                        <input type="number" id="breite" name="breite" min="30" max="300" step="1"
+                            placeholder="z.B. 120">
+                    </div>
+                    <div class="form-group">
+                        <label for="laenge">Länge (cm):</label>
+                        <input type="number" id="laenge" name="laenge" min="30" max="400" step="1"
+                            placeholder="z.B. 180">
+                    </div>
+                    <div class="form-group">
+                        <label for="staerke">Stärke (mm):</label>
+                        <select id="staerke" name="staerke">
+                            <option value="">Bitte auswählen</option>
+                            <option value="25">25 mm</option>
+                            <option value="30">30 mm</option>
+                            <option value="40">40 mm</option>
+                            <option value="50">50 mm</option>
+                            <option value="60">60 mm</option>
+                            <option value="70">70 mm</option>
+                            <option value="80">80 mm</option>
+                            <option value="90">90 mm</option>
+                            <option value="100">100 mm</option>
+                            <option value="110">110 mm</option>
+                            <option value="120">120 mm</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Auswahl der Holzqualität und Struktur -->
+            <section class="form-section">
+                <h2>Holzqualität und Struktur</h2>
+                <div class="form-group">
+                    <label for="rissanteil">Rissanteile / Struktur:</label>
+                    <select id="rissanteil" name="rissanteil">
+                        <option value="">Bitte auswählen</option>
+                        <option value="ohne">Ohne Rissanteil</option>
+                        <option value="leicht">Leichter Rissanteil</option>
+                        <option value="normal">Normaler Rissanteil</option>
+                    </select>
+                </div>
+
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="verfuellt" name="verfuellt">
+                        <span class="checkbox-custom"></span>
+                        Äste/Risse schwarz verfüllt (+47,60 €/m²)
+                    </label>
+                </div>
+            </section>
+
+            <!-- Auswahl von Farbe und Finish -->
+            <section class="form-section">
+                <h2>Farbe und Finish</h2>
+                <div class="form-group">
+                    <label for="farbe">Farbe:</label>
+                    <select id="farbe" name="farbe">
+                        <option value="">Bitte auswählen</option>
+                        <option value="natura">Natura</option>
+                        <option value="alte-eiche">Alte Eiche</option>
+                        <option value="eiche-dunkel">Eiche dunkel</option>
+                        <option value="hellgrau">Hellgrau geölt</option>
+                        <option value="dunkelgrau">Dunkelgrau geölt</option>
+                        <option value="weiss-geoelt">Weiß geölt</option>
+                        <option value="weiss-gekaelkt">Weiß gekälkt</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="finish">Oberflächenbehandlung:</label>
+                    <select id="finish" name="finish">
+                        <option value="">Bitte auswählen</option>
+                        <option value="hart-oel">Hart-Öl</option>
+                        <option value="mattlack">Mattlack</option>
+                        <option value="roh">Reine Balken Aussenseite (+71,40 €/m²)</option>
+                    </select>
+                </div>
+                <div class="form-preview" id="farbePreview"></div>
+            </section>
+        </form>
+
+        <!-- Bereich für die Preisanzeige und die Buttons -->
+        <aside class="preis-bereich">
+            <div class="preis-container">
+                <h2>Ihr Preis</h2>
+                <div id="preisDetails" class="preis-details">
+                    <div class="preis-zeile">
+                        <span>Fläche:</span>
+                        <span id="flaecheAnzeige">— m²</span>
+                    </div>
+                    <div class="preis-zeile">
+                        <span>Grundpreis pro m²:</span>
+                        <span id="grundpreisAnzeige">— €</span>
+                    </div>
+                    <div class="preis-zeile" id="zuschlagZeile" style="display: none;">
+                        <span>Zuschläge pro m²:</span>
+                        <span id="zuschlagAnzeige">— €</span>
+                    </div>
+                    <div class="preis-zeile" id="kleinteilZeile" style="display: none;">
+                        <span>Kleinteil-Zuschlag:</span>
+                        <span>+5%</span>
+                    </div>
+                    <div class="preis-gesamt">
+                        <span>Gesamtpreis:</span>
+                        <span id="gesamtPreis">— €</span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="berechnenBtn" class="btn btn-primary">
+                        Preis berechnen
+                    </button>
+                    <button type="button" id="resetBtn" class="btn btn-secondary">
+                        Zurücksetzen
+                    </button>
+                </div>
+
+                <div id="fehlerMeldung" class="error-message" style="display: none;"></div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Fußbereich mit Copyright -->
+    <footer>
+        <p>&copy; 2026 Premium Tischlerei - Tischplatten-Konfigurator - Marcus Reiser</p>
+    </footer>
+
+</body>
+
+</html>

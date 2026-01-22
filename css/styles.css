@@ -324,24 +324,53 @@ main.konfigurator {
 
 /* Price Details */
 .preis-details {
-    margin-bottom: 2rem;
+    width: 100%;
 }
 
 .preis-zeile {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #f0f0f0;
+    align-items: center;
+    gap: 0.5em;
+    width: 100%;
+    /* Verhindert Zeilenumbruch bei langen Texten */
+    white-space: nowrap;
 }
 
-.preis-zeile:last-child {
-    border-bottom: none;
+.preis-zeile span {
+    display: inline-block;
+    min-width: 0;
+    /* Beschreibung linksbündig, Preis rechtsbündig */
 }
 
+.preis-zeile span:first-child {
+    text-align: left;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.preis-zeile span:last-child {
+    text-align: right;
+    flex: 0 0 auto;
+    padding-left: 1em;
+}
+
+.zuschlag-header {
+    font-weight: bold;
+    background: none;
+    border: none;
+    margin-top: 0.5em;
+    margin-bottom: 0.2em;
+}
+
+/* Gesamtpreis hervorheben */
 .preis-gesamt {
     display: flex;
     justify-content: space-between;
-    padding: 1rem 0;
+    align-items: flex-start;
+    padding: 1rem 0 0.5rem 0;
     margin-top: 1rem;
     border-top: 2px solid var(--primary-color);
     font-size: 1.3rem;
@@ -400,6 +429,27 @@ main.konfigurator {
     border-radius: var(--border-radius);
     margin-top: 1rem;
     font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Zuschlagsanzeige im Preisfeld */
+.zuschlag-proqm {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: var(--primary-color, #2c5530);
+    margin-bottom: 0.2em;
+}
+
+.zuschlag-details {
+    margin: 0.3em 0 0 1.2em;
+    padding: 0;
+    font-size: 1em;
+    color: #333;
+    list-style: disc inside;
+}
+
+.zuschlag-details li {
+    margin-bottom: 0.1em;
     line-height: 1.4;
 }
 

@@ -36,7 +36,14 @@ const PREISE = {
 // Zuschläge für bestimmte Optionen (z.B. verfüllte Risse, Roh-Finish)
 const ZUSCHLAEGE = {
     verfuellt: 47.60,       // Äste/Risse schwarz verfüllt
-    roh: 71.40              // Reine Balken Aussenseite
+    roh: 71.40,             // Reine Balken Aussenseite
+    // Beispiel-Zuschläge für Farben (pro m²)
+    'farbe-hellgrau': 25.00,
+    'farbe-dunkelgrau': 30.00,
+    'farbe-weiss-geoelt': 20.00,
+    // Beispiel-Zuschläge für Finish (pro m²)
+    'finish-mattlack': 15.00,
+    'finish-hart-oel': 10.00
 };
 
 // Zuschlag, wenn die Fläche kleiner als 1 m² ist
@@ -143,20 +150,24 @@ function registerEventListeners() {
     // Wenn die Farbe geändert wird, wird das Vorschaubild aktualisiert
     DOM.farbeSelect.addEventListener('change', updateFarbePreview);
 
-    // Bei Änderungen an Eingabefeldern wird automatisch neu berechnet
-    const autoCalculateElements = [
+    // Automatische Berechnung entfernt – nur noch Button löst Berechnung aus
+    // (Optional: Felder können weiterhin auf Fehler geprüft werden, aber keine Berechnung)
+    const autoValidateElements = [
         DOM.breiteInput,
         DOM.laengeInput,
-        DOM.staerkeSelect,
-        DOM.rissanteilSelect,
-        DOM.verfuelltCheckbox,
-        DOM.finishSelect
+        DOM.staerkeSelect
     ];
-
-    autoCalculateElements.forEach(element => {
+    autoValidateElements.forEach(element => {
         if (element) {
-            const eventType = element.type === 'checkbox' ? 'change' : 'input';
-            element.addEventListener(eventType, debounce(berechnePreis, 300));
+            element.addEventListener('change', () => {
+                const konfiguration = sammleKonfiguration();
+                const validierung = validiereKonfiguration(konfiguration);
+                if (!validierung.isValid) {
+                    zeigeFehlermeldung(validierung.fehler);
+                } else {
+                    verbergeFehlermeldung();
+                }
+            });
         }
     });
 }
@@ -171,21 +182,29 @@ function handleTypChange() {
 function updateStaerkenVerfuegbarkeit() {
     const gewaehlterTyp = document.querySelector('input[name="typ"]:checked')?.value;
     const optionen = DOM.staerkeSelect.querySelectorAll('option');
-
+    let gueltigeGefunden = false;
     optionen.forEach(option => {
         const staerkeWert = parseInt(option.value);
-
         if (!isNaN(staerkeWert)) {
             // Gedoppelt ist erst ab 40mm verfügbar
             const istVerfuegbar = gewaehlterTyp === 'gedoppelt' ? staerkeWert >= 40 : true;
             option.disabled = !istVerfuegbar;
-
+            if (istVerfuegbar && !gueltigeGefunden) {
+                gueltigeGefunden = true;
+            }
             // Wenn aktuell gewählte Stärke nicht mehr verfügbar ist, zurücksetzen
             if (!istVerfuegbar && option.selected) {
                 DOM.staerkeSelect.selectedIndex = 0;
             }
         }
     });
+    // Hinweistext anzeigen, wenn keine Stärke ausgewählt ist (nur wenn Wert leer oder ungültig)
+    const staerkeValue = DOM.staerkeSelect.value;
+    if (!staerkeValue || isNaN(parseInt(staerkeValue))) {
+        zeigeFehlermeldung('Bitte wählen Sie eine Stärke aus.');
+    } else {
+        verbergeFehlermeldung();
+    }
 }
 
 // Hauptfunktion: Berechnet den Preis und zeigt ihn an
@@ -216,11 +235,14 @@ function berechnePreis() {
 
 // Liest alle Werte aus dem Formular aus und gibt sie als Objekt zurück
 function sammleKonfiguration() {
+    // Eingaben bereinigen: führende Nullen entfernen
+    let breite = DOM.breiteInput.value.replace(/^0+/, '');
+    let laenge = DOM.laengeInput.value.replace(/^0+/, '');
     return {
         typ: document.querySelector('input[name="typ"]:checked')?.value,
         form: DOM.formSelect.value,
-        breite: parseFloat(DOM.breiteInput.value),
-        laenge: parseFloat(DOM.laengeInput.value),
+        breite: parseFloat(breite),
+        laenge: parseFloat(laenge),
         staerke: parseInt(DOM.staerkeSelect.value),
         rissanteil: DOM.rissanteilSelect.value,
         verfuellt: DOM.verfuelltCheckbox.checked,
@@ -272,7 +294,15 @@ function validiereKonfiguration(config) {
 // Berechnet alle Preisbestandteile (Fläche, Zuschläge, Gesamtpreis)
 function berechnePreisDetails(config) {
     // Fläche in m² berechnen
-    const flaecheQm = (config.breite * config.laenge) / 10000;
+    let flaecheQm;
+    // Runde und ovale Platten als Ellipse berechnen
+    if (config.form === 'rund' || config.form === 'oval') {
+        // Ellipsenfläche: π * (Breite/2) * (Länge/2)
+        flaecheQm = Math.PI * (config.breite / 2) * (config.laenge / 2) / 10000;
+    } else {
+        // Rechteckige Fläche
+        flaecheQm = (config.breite * config.laenge) / 10000;
+    }
 
     // Grundpreis pro m² ermitteln
     const grundpreisProQm = PREISE[config.typ][config.staerke];
@@ -289,6 +319,30 @@ function berechnePreisDetails(config) {
     if (config.finish === 'roh') {
         zuschlagProQm += ZUSCHLAEGE.roh;
         zuschlagDetails.push(`Reine Balken Aussenseite: +${ZUSCHLAEGE.roh.toFixed(2)} €/m²`);
+    }
+
+    // Beispiel-Zuschläge für Farben
+    if (config.farbe === 'hellgrau') {
+        zuschlagProQm += ZUSCHLAEGE['farbe-hellgrau'];
+        zuschlagDetails.push(`Farbe Hellgrau: +${ZUSCHLAEGE['farbe-hellgrau'].toFixed(2)} €/m²`);
+    }
+    if (config.farbe === 'dunkelgrau') {
+        zuschlagProQm += ZUSCHLAEGE['farbe-dunkelgrau'];
+        zuschlagDetails.push(`Farbe Dunkelgrau: +${ZUSCHLAEGE['farbe-dunkelgrau'].toFixed(2)} €/m²`);
+    }
+    if (config.farbe === 'weiss-geoelt') {
+        zuschlagProQm += ZUSCHLAEGE['farbe-weiss-geoelt'];
+        zuschlagDetails.push(`Farbe Weiß geölt: +${ZUSCHLAEGE['farbe-weiss-geoelt'].toFixed(2)} €/m²`);
+    }
+
+    // Beispiel-Zuschläge für Finish (Werte aus Select und Keys im Objekt abgleichen)
+    if (config.finish === 'mattlack' || config.finish === 'Mattlack') {
+        zuschlagProQm += ZUSCHLAEGE['finish-mattlack'];
+        zuschlagDetails.push(`Finish Mattlack: +${ZUSCHLAEGE['finish-mattlack'].toFixed(2)} €/m²`);
+    }
+    if (config.finish === 'hart-oel' || config.finish === 'Hart-Öl') {
+        zuschlagProQm += ZUSCHLAEGE['finish-hart-oel'];
+        zuschlagDetails.push(`Finish Hart-Öl: +${ZUSCHLAEGE['finish-hart-oel'].toFixed(2)} €/m²`);
     }
 
     // Zwischensumme
@@ -316,13 +370,25 @@ function aktualisierePreisanzeige(preisberechnung) {
     DOM.flaecheAnzeige.textContent = `${preisberechnung.flaecheQm.toFixed(2)} m²`;
     DOM.grundpreisAnzeige.textContent = `${preisberechnung.grundpreisProQm.toFixed(2)} €`;
 
-    // Zuschläge anzeigen/verbergen
-    if (preisberechnung.zuschlagProQm > 0) {
-        DOM.zuschlagAnzeige.textContent = `+${preisberechnung.zuschlagProQm.toFixed(2)} €`;
+    // Zuschläge-Überschrift und Positionen als Preiszeilen
+    if (preisberechnung.zuschlagProQm > 0 && preisberechnung.zuschlagDetails.length > 0) {
+        let zuschlagHtml = `<div class="preis-zeile zuschlag-header"><span>Zuschläge:</span><span></span></div>`;
+        preisberechnung.zuschlagDetails.forEach(detail => {
+            // Quadratmeter-Zeichen und Sonderzeichen im Regex korrekt escapen
+            const match = detail.match(/^(.*?):\s*([+\-]?[0-9,.]+\s*€\/m²)$/);
+            if (match) {
+                zuschlagHtml += `<div class="preis-zeile"><span>${match[1]}:</span><span>${match[2]}</span></div>`;
+            } else {
+                zuschlagHtml += `<div class="preis-zeile"><span>${detail}</span></div>`;
+            }
+        });
+        DOM.zuschlagAnzeige.innerHTML = zuschlagHtml;
         DOM.zuschlagZeile.style.display = 'flex';
         DOM.zuschlagAnzeige.title = preisberechnung.zuschlagDetails.join('\n');
     } else {
+        DOM.zuschlagAnzeige.innerHTML = '— €';
         DOM.zuschlagZeile.style.display = 'none';
+        DOM.zuschlagAnzeige.title = '';
     }
 
     // Kleinteil-Zuschlag anzeigen/verbergen
